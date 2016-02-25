@@ -25,21 +25,25 @@ key=header.split('\t')
 for i in range(1,len(data)):
     value=data[i]
     value=value.split('\t')
-    if value[3] == '':
+    if value[12] == '':
     	#print 'test'
     	value = ''
     #print value[3]
     #print value
     new=OrderedDict(zip(key,value))
     #print new
-    list1.append(new)
+
+    if new:
+        list1.append(new)
+    else:
+        print 'dictionary is empty'
+    
 record= list1
 #print record
 
 
 for j in record:
-	print j['player']
-	x_id = j['transaction_id']+'#'+j['player']+'#'+j['team']+'#'+j['type']
+	ex_id = j['transaction_id']+'#'+j['player']+'#'+j['team']+'#'+j['type']
 	#print  ex_id
 	description = '*Find or create each transaction and curate as per guidelines* Player Name: '+j['player']+' # Team Name: '+j['team']+' # Type: '+j['type']+' # Transaction: '+j['note']+' # Transaction date: '+j['trans_date']
 	task_type = '/common/topic'
@@ -48,3 +52,31 @@ for j in record:
 	j['Task_Type'] = task_type
 	list2.append(j)
 #print list2
+
+for x in list2:
+    tag=x.keys()
+    tag=tuple(tag)
+#print tag
+
+dd2=defaultdict(list)
+
+with open (outfile,'w') as f1:
+    #f1.write('\t'.join(tag)+'\n')
+    for row in list2:
+        for k in tag:
+            
+            if k not in row.keys():
+                dd[k]=''
+                #print 'false'
+            else:
+                dd[k]=row[k]
+                #print 'true', row[k]
+            dd2[k].append(dd[k])
+
+    wanted_keys = ['player','type','Task_Type','URL','Description','external_id','note']
+    final_dict=dict([(a,dd2[a]) for a in wanted_keys if a in dd2])
+    #print final_dict
+
+    f1.write('\t'.join(final_dict.keys())+'\n')
+    for b in zip(*final_dict.values()):
+        f1.write('\t'.join(b)+'\n')
