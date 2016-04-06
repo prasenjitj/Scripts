@@ -4,35 +4,57 @@ import csv
 import re
 from googleapiclient.discovery import build
 ik =[]
+flag_1 = 0
+flag_2 = 0
+count = 0
+keycount = 0
+key = 0
 with open('input.csv', 'rb') as csvinput:
-	with open ('output.csv', 'w') as csvoutput: 
+	with open ('output.csv', 'wb') as csvoutput: 
 		reader = csv.DictReader(csvinput)
-		fieldnames = ['Title', 'Director','Key']
+		fieldnames = ['Entity','url','Director','Year','Alias','IMDB URL','genre','Runtime']
 		writer = csv.DictWriter(csvoutput, fieldnames=fieldnames)
 		writer.writeheader()
 
 		for row in reader:
 			#print (row['Title'], row['Url'], row['Director'], row['Alias'], row['Year'])
 			print "===================================="
-			query = row['Title']+' imdb '+row['Director']
-			title = row['Title']
-			print 'Tite:',title
+			
+			query = row['Entity']+' '+row['Director']+' '+row['Year']+' imdb'
+			title = row['Entity']
+			
 			director = row['Director']
 			director = re.sub(r', ','|',director)
-			print 'Director:',director
+			year = row['Year']
+			alias = row['Alias']
+			url = row['url']
+			genre = row['genre']
+			runtime = row['Runtime']
+			# print 'Tite:',title
+			# print 'Director:',director
+			# print 'Year:',year
+			# print 'Alias:',alias
+			# print 'URL:',url
+			# print 'Genre:',genre
+			# print 'Runtime:',runtime
 			print 'Query :: ',query
-			keys = ['AIzaSyBlU4hsYnl6oSvrKw8ZKiTrRmZzBUBANWs','AIzaSyB7BqsM_vljNSPOq4twbB7N3sUutyjoobE','AIzaSyCv6pMQ4ObhFbtWuM5Ge5CEmLZ5o_VcuXQ']	
-			service = build("customsearch", "v1", developerKey="AIzaSyCv6pMQ4ObhFbtWuM5Ge5CEmLZ5o_VcuXQ")
+			
+			Api_keys = ['AIzaSyBlU4hsYnl6oSvrKw8ZKiTrRmZzBUBANWs','AIzaSyB7BqsM_vljNSPOq4twbB7N3sUutyjoobE','AIzaSyCv6pMQ4ObhFbtWuM5Ge5CEmLZ5o_VcuXQ']
+			service = build("customsearch", "v1", developerKey='AIzaSyB7BqsM_vljNSPOq4twbB7N3sUutyjoobE')
 			res = service.cse().list(q=query,cx='009241977094486741223:3agszpaq5sy',).execute()
-			#pprint.pprint(res)
-			#print type(res)
 			response = res.get('items')
+
+			
 			if response:
 				for i in range(0,len(response)):
 
 					json_title = res['items'][i]['htmlTitle']
+					json_title = re.sub(r'<.*?>','',json_title)
+					#print 'fetched title:',json_title.encode('utf8')
 					
 					json_director =res['items'][i]['htmlSnippet']
+					json_director = re.sub(r'<.*?>','',json_director)
+					#print 'fetched director:',json_director.encode('utf8')
 					
 
 					if re.search(title,json_title,re.IGNORECASE) and re.search(director,json_director,re.IGNORECASE):
@@ -42,13 +64,14 @@ with open('input.csv', 'rb') as csvinput:
 
 						
 						ik = imdb_key.group(1)
-						
-						writer.writerow({'Title':row['Title'],'Director':row['Director'],'Key':ik})
-
+						writer.writerow({'Entity':title,'Director':row['Director'],'Year':year,'Alias':alias,'url':url,'genre':genre,'Runtime':runtime,'IMDB URL':ik})
+						flag_1 = 1
 						break
-					
-						#writer.writerow({'Title':row['Title'],'Director':row['Director'],'Key':''}) 
+					else:
+						flag_2 = 1
+						pass
 	
 			else:
 			  	print "Imdb key not found"
-			  	writer.writerow({'Title':row['Title'],'Director':row['Director'],'Key':''})
+			if flag_1 == 0 and flag_2 == 1:
+				writer.writerow({'Entity':title,'Director':row['Director'],'Year':year,'Alias':alias,'url':url,'genre':genre,'Runtime':runtime,'IMDB URL':''})
