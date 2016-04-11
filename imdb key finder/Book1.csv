@@ -1,34 +1,10 @@
-Entity,Url,Director,Year,Alias,IMDB_OLD,IMDB URL,,genre,Runtime
-Pipe Dream,http://slgff.strangertickets.com/films/28226825/pipe-dream,Yudho Aditya,2015,,tt3756812,,0,,15
-"Margarita, With A Straw",http://slgff.strangertickets.com/films/28226577/margarita-with-a-straw,Shonali Bose,2014,,tt2929690,,0,,100
-Chance,http://slgff.strangertickets.com/films/28226703/chance,Jake Graf,2015,,tt4070722,,0,,16
-Beat,http://slgff.strangertickets.com/films/28226660/beat,Tricia Hagoriles,2015,,tt3714864,,0,,15
-Sebastian,http://slgff.strangertickets.com/films/28226563/sebastian,Carlos Ciurlizza,2014,,tt3515652,,0,,108
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
-,,,,,,,,,
+Entity,Director,Url,Year,Alias,IMDB_OLD,IMDB URL,genre,Runtime
+"Forever, Ally",Iyabo Boyd,http://slgff.strangertickets.com/films/28226768/forever-ally,2015,,tt4513026,,,11
+Gayby Baby,Maya Newell,http://slgff.strangertickets.com/films/28226531/gayby-baby,2015,,tt3898028,,,85
+The First Session,Ryan Logan,https://slgff.strangertickets.com/films/28226749/first-session-the,2015,,tt4367124,,,6
+L'assassins,Tyler Jensen,http://slgff.strangertickets.com/films/28226789/lassassins,2015,,tt4496978,,,13
+The Celluloid Closet,"Robert Epstein, Jeffrey Friedman",http://slgff.strangertickets.com/films/28226529/celluloid-closet-the,1995,,tt0112651,,,101
+Peter De Rome: Grandfather Of Gay Porn,Ethan Reid,http://slgff.strangertickets.com/films/28226609/peter-de-rome-grandfather-of-gay-porn,2014,,tt3801878,,,97
+Meme Team,"Jackie/J-Qwille Sin, Carleigh Ellwood, Quinton Mourjoun",http://slgff.strangertickets.com/films/28226788/meme-team,2015,,,,,5
+Day Drunk Gays: Beardist,Benjamin Simons,http://slgff.strangertickets.com/films/28226720/day-drunk-gays-beardist,2014,,,,,4
+Sylvia O'stayformore's Night With Jacqueline,"Sylvia O'Stayformore, Michael Anderson, Shane Wahlund",http://slgff.strangertickets.com/films/28226613/sylvia-ostayformores-night-with-jacqueline,2015,,,,,120
