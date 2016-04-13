@@ -3,14 +3,16 @@
 
 import re
 import csv
-import MySQLdb
+import mysql.connector
 from googleapiclient.discovery import build
 
-conn = MySQLdb.connect('localhost','root','123','test')
+conn = mysql.connector.connect(host='localhost',database='test',user='root',password='')
 print('Connected to MySQL database')
 cursor = conn.cursor()
 cursor.execute("SELECT * FROM api")
 rows = cursor.fetchall()
+
+
 
 count = 0
 keycount = 0
@@ -18,7 +20,7 @@ key = 0
 keycount = 0
 keys = 1
 key_id =''
-with open('Book1.csv', 'rb') as csvinput:
+with open('Book2.csv', 'rb') as csvinput:
 	with open ('output3.csv', 'wb') as csvoutput: 
 		reader = csv.DictReader(csvinput)
 		fieldnames = ['Entity','url','Director','Year','Alias','IMDB_OLD','IMDB URL','genre','Runtime']
@@ -38,7 +40,7 @@ with open('Book1.csv', 'rb') as csvinput:
 			genre = row['genre']
 			runtime = row['Runtime']
 			IMDB_OLD = row['IMDB_OLD']
-			query = t
+			query = t + ' ' + d
 			# print 'Tite:',title
 			# print 'Director:',director
 			# print 'Year:',year
@@ -58,7 +60,7 @@ with open('Book1.csv', 'rb') as csvinput:
 					key_id = i[1]
 					print key_id
 
-			service = build("customsearch", "v1", developerKey='AIzaSyBU49J2cMO9FDJBWwhNXP2OnsrFuOKU868')
+			service = build("customsearch", "v1", developerKey=key_id)
 			res = service.cse().list(q=query,cx='009241977094486741223:3agszpaq5sy',).execute()
 			response = res.get('items')
 
@@ -76,16 +78,11 @@ with open('Book1.csv', 'rb') as csvinput:
 					print "===================================="
 					json_title = res['items'][i]['pagemap']['metatags'][0]['title'].lower()
 					json_title = re.sub(r'<.*?>','',json_title)
-					# print 'fetched title:',json_title
+					print 'fetched title:',json_title.encode('utf-8')
 					json_director = res['items'][i]['snippet'].lower()
-					# print json_director.encode('utf-8')
-					json_director = re.search(d,json_director,re.UNICODE)
-
-					# json_year = res['items'][i]['pagemap']['metatags'][0]['title'].lower()
-					# json_year = re.sub(r'.*\(','',json_year)
-					# json_year = re.sub(r'\).*','',json_year).strip()
-					# print json_year.encode('utf-8')
-					
+					print json_director.encode('utf-8')
+					json_director = re.search(d,json_director)
+				 
 					if re.sub(r'\s+\(.*','',json_title).strip() == t:
 						print "##"
 						if json_director is None:
@@ -95,7 +92,7 @@ with open('Book1.csv', 'rb') as csvinput:
 								json_director = res['items'][i]['pagemap']['metatags'][0].get('og:description').lower()
 								print d
 								print json_director.encode('utf-8')
-								json_director = re.search(d,json_director,re.UNICODE)
+								json_director = re.search(d,json_director)
 								if json_director:
 									print '####' 
 									if json_director.group(0) == d:
@@ -110,13 +107,19 @@ with open('Book1.csv', 'rb') as csvinput:
 										print "######"
 								else:
 									print "director not found:"
-									# flag = 1		
+									flag = 1		
 									
 							except:
 								print "Exception caught, no og:description"
-						# elif json_year == year:
-						# 	print "#######"
-							
+						else:
+							if json_director.group(0) == d:
+								print '#####'
+								imdb_key = res['items'][i]['link']
+								print imdb_key
+								writer.writerow({'Entity':t,'Director':row['Director'],'Year':year,'Alias':alias,'url':url,'genre':genre,'Runtime':runtime,'IMDB_OLD': IMDB_OLD,'IMDB URL':imdb_key})
+										
+								check = 1
+								break		
 								
 					else:
 						print 'no key found'
