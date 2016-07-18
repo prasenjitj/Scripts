@@ -16,7 +16,7 @@ input_file = sys.argv[1]
 output_file = sys.argv[2]
 flag = 0
 
-service = build("customsearch", "v1", developerKey="AIzaSyCx09FBPm89P1ZVC5kMXMeFKmFmgQxAXuE")
+service = build("customsearch", "v1", developerKey="AIzaSyCAbGzazc2D2-XesEElpF6sGMhZn8pVW6Y")
 with open(input_file, 'rb') as csvinput:
     with open(output_file, 'wb') as csvoutput:
         reader = csv.DictReader(csvinput)
@@ -38,6 +38,7 @@ with open(input_file, 'rb') as csvinput:
             if response:
                 for i in range(len(response)):
                     try:
+                        
                         title_match = response[i]['pagemap']['metatags'][i]['og:title']
                         title_match = re.findall(r'(^.*?)\s\(',title_match)
                         title_match = title_match[i].lower().strip().decode('utf-8')
@@ -57,6 +58,7 @@ with open(input_file, 'rb') as csvinput:
                             flag = 1
                         else:
                             print 'result not found'
+                            flag = 0
                         if flag:
                             writer.writerow({'Entity': row['Entity'],'Director': row['Director'], 'Alias': row['Alias'], 'IMDB URL': imdb_url})
                         else:
@@ -65,5 +67,12 @@ with open(input_file, 'rb') as csvinput:
                             
 
                     except IndexError:
-                        #print 'Index out of range'
+                        print 'Index out of range'
+                        writer.writerow({'Entity': row['Entity'],'Director': row['Director'], 'Alias': row['Alias'], 'IMDB URL': ""})
                         pass
+                    except KeyError:
+                        print "key error"
+                        # writer.writerow({'Entity': row['Entity'],'Director': row['Director'], 'Alias': row['Alias'], 'IMDB URL': ""})
+                        pass
+            else:
+                writer.writerow({'Entity': row['Entity'],'Director': row['Director'], 'Alias': row['Alias'], 'IMDB URL': ""})
