@@ -1,77 +1,48 @@
-import csv
-#import traceback
-#import pprint
+"""
+This script takes two arguments input file and output file in csv format,
+and creates custom serach queries.
+It fetches google custom search api keys from api table.
+"""
+from pprint import pprint
 import re
+import csv
+import sys
 from googleapiclient.discovery import build
-ik =[]
-flag_1 = 0
-flag_2 = 0
-count = 0
-keycount = 0
-key = 0
-with open('input.csv', 'rb') as csvinput:
-	with open ('output.csv', 'wb') as csvoutput: 
-		reader = csv.DictReader(csvinput)
-		fieldnames = ['Entity','url','Director','Year','Alias','IMDB URL','genre','Runtime']
-		writer = csv.DictWriter(csvoutput, fieldnames=fieldnames)
-		writer.writeheader()
 
-		for row in reader:
-			#print (row['Title'], row['Url'], row['Director'], row['Alias'], row['Year'])
-			print "===================================="
-			
-			query = row['Entity']+' '+row['Director']+' '+row['Year']+' imdb'
-			title = row['Entity']
-			
-			director = row['Director']
-			director = re.sub(r', ','|',director)
-			year = row['Year']
-			alias = row['Alias']
-			url = row['url']
-			genre = row['genre']
-			runtime = row['Runtime']
-			# print 'Tite:',title
-			# print 'Director:',director
-			# print 'Year:',year
-			# print 'Alias:',alias
-			# print 'URL:',url
-			# print 'Genre:',genre
-			# print 'Runtime:',runtime
-			print 'Query :: ',query
-			
-			Api_keys = ['AIzaSyBlU4hsYnl6oSvrKw8ZKiTrRmZzBUBANWs','AIzaSyB7BqsM_vljNSPOq4twbB7N3sUutyjoobE','AIzaSyCv6pMQ4ObhFbtWuM5Ge5CEmLZ5o_VcuXQ']
-			service = build("customsearch", "v1", developerKey='AIzaSyB7BqsM_vljNSPOq4twbB7N3sUutyjoobE')
-			res = service.cse().list(q=query,cx='009241977094486741223:3agszpaq5sy',).execute()
-			response = res.get('items')
+input_file = sys.argv[1]
+output_file = sys.argv[2]
 
-			
-			if response:
-				for i in range(0,len(response)):
+service = build("customsearch", "v1", developerKey="AIzaSyCx09FBPm89P1ZVC5kMXMeFKmFmgQxAXuE")
 
-					json_title = res['items'][i]['htmlTitle']
-					json_title = re.sub(r'<.*?>','',json_title)
-					#print 'fetched title:',json_title.encode('utf8')
-					
-					json_director =res['items'][i]['htmlSnippet']
-					json_director = re.sub(r'<.*?>','',json_director)
-					#print 'fetched director:',json_director.encode('utf8')
-					
+with open(input_file, 'rb') as csvinput:
+    with open(output_file, 'wb') as csvoutput:
+        reader = csv.DictReader(csvinput)
+        # writer = csv.DictWriter(csvoutput)
+        # writer.writeheader()
+        for row in reader:
 
-					if re.search(title,json_title,re.IGNORECASE) and re.search(director,json_director,re.IGNORECASE):
-						imdb_key = res['items'][i]['formattedUrl']
-						imdb_key = re.search('^www.*?title/(.*?)/.*',imdb_key)
-						print 'IMDB Key :: ', imdb_key.group(1)
-
-						
-						ik = imdb_key.group(1)
-						writer.writerow({'Entity':title,'Director':row['Director'],'Year':year,'Alias':alias,'url':url,'genre':genre,'Runtime':runtime,'IMDB URL':ik})
-						flag_1 = 1
-						break
-					else:
-						flag_2 = 1
-						pass
-	
-			else:
-			  	print "Imdb key not found"
-			if flag_1 == 0 and flag_2 == 1:
-				writer.writerow({'Entity':title,'Director':row['Director'],'Year':year,'Alias':alias,'url':url,'genre':genre,'Runtime':runtime,'IMDB URL':''})
+            title = row['Entity'].lower().strip()
+            director = row['Director'].lower().strip()
+            director = re.sub(r'(,\s.*)', '', director).strip()
+            year = row['Year']
+            alias = row['Alias'].lower().strip()
+            query = title + " " + director
+            print query
+            res = service.cse().list(q=query,cx='009241977094486741223:3agszpaq5sy',).execute()
+            response = res.get('items')
+            if response:
+              for i in range(len(response)):
+                try:
+                  title_match = response[i]['pagemap']['metatags'][i]['og:title']
+                  title_match = title_match[i].lower().strip()
+                  director = response[i]['pagemap']['metatags'][i]['og:description']
+                  director_match = re.findall(r'\wirected by\s(.*?)\.',director)
+                  director_match =  director_match[i].lower().strip()
+                  if title_match and director_match:
+                    imdb_url = response[i]['pagemap']['metatags'][i]['og:url']
+                    print imdb_url
+                  else:
+                    print 'result not found'
+                except IndexError:
+                  #print 'Index out of range'
+                pass
