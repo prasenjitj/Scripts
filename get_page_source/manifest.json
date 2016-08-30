@@ -1,0 +1,30 @@
+{
+  "name": "Get pages source",
+  "version": "1.0",
+  "manifest_version": 2,
+  "description": "Get pages source from a popup",
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["tabs", "<all_urls>", "https://apis.google.com/js/client.js", "https://accounts.google.com/o/oauth2/token", "identity", "https://content-sheets.googleapis.com/v4/spreadsheets/*"],
+  
+  "content_scripts": [
+  {
+    "matches": ["http://*/*", "https://*/*"],
+    "js": ["write.js"],
+    "run_at": "document_start"
+  }
+	],
+  "oauth2": {
+    "client_id": "973704012693-r4s3j3tbnfrl2v7l64semk0bgevmk321.apps.googleusercontent.com",
+    "scopes": [
+        
+        "https://www.googleapis.com/auth/spreadsheets"
+    ]
+	},
+	"content_security_policy": "script-src 'self' https://apis.google.com; object-src 'self'"
+	
+	
+}
+

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+
+<html style=''>
+<head>
+<script src='popup.js'></script>  
+<script src="https://apis.google.com/js/client.js?onload=checkAuth"></script>
+<script src="write.js"></script>  
+    
+<title></title>
+</head>
+<body style="width:400px;">
+    <div id='message'>
+        Injecting Script....
+    </div>
+    <p id="demo">
+    </p>
+    
+   
+    <input type="button" id="button"  value="submit" ></input>
+    <div id="authorize-div" style="display: none">
+      <span>Authorize access to Google Sheets API</span>
+      <!--Button for the user to click to initiate auth sequence -->
+      <button id="authorize-button">
+        Authorize
+      </button>
+    </div>
+    <pre id="output"></pre>
+</body>
+</html>
